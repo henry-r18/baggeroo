@@ -1,5 +1,5 @@
 <script setup>
-
+import Dropzone from './components/Dropzone.vue';
 </script>
 
 <template>
@@ -13,14 +13,10 @@
     </div>
 
     <div class="dropzone box">
-      <p>
-        Drag and drop files here<br />
-        or select below...
-      </p>
+      <Dropzone />
     </div>
 
     <div class="footer">
-      <button>Select files...</button>
       <button>Generate bag</button>
     </div>
   </main>
@@ -54,8 +50,14 @@ main {
 }
 
 .box, .menu {
-  background-color: #f6f6f6;
+  background-color: #f1f1f1;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .box, .menu {
+    background-color: #f6f6f6;
+  }
 }
 
 .box {
