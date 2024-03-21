@@ -1,52 +1,70 @@
 <script setup>
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-import Greet from "./components/Greet.vue";
+
 </script>
 
 <template>
-  <div class="container">
-    <h1>Welcome to Tauri!</h1>
-
-    <div class="row">
-      <a href="https://vitejs.dev" target="_blank">
-        <img src="/vite.svg" class="logo vite" alt="Vite logo" />
-      </a>
-      <a href="https://tauri.app" target="_blank">
-        <img src="/tauri.svg" class="logo tauri" alt="Tauri logo" />
-      </a>
-      <a href="https://vuejs.org/" target="_blank">
-        <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-      </a>
+  <main>
+    <div class="sidebar menu">
+    
     </div>
 
-    <p>Click on the Tauri, Vite, and Vue logos to learn more.</p>
+    <div class="header">
 
-    <p>
-      Recommended IDE setup:
-      <a href="https://code.visualstudio.com/" target="_blank">VS Code</a>
-      +
-      <a href="https://github.com/johnsoncodehk/volar" target="_blank">Volar</a>
-      +
-      <a href="https://github.com/tauri-apps/tauri-vscode" target="_blank"
-        >Tauri</a
-      >
-      +
-      <a href="https://github.com/rust-lang/rust-analyzer" target="_blank"
-        >rust-analyzer</a
-      >
-    </p>
+    </div>
 
-    <Greet />
-  </div>
+    <div class="dropzone box">
+      <p>
+        Drag and drop files here<br />
+        or select below...
+      </p>
+    </div>
+
+    <div class="footer">
+      <button>Select files...</button>
+      <button>Generate bag</button>
+    </div>
+  </main>
 </template>
 
 <style scoped>
-.logo.vite:hover {
-  filter: drop-shadow(0 0 2em #747bff);
+main {
+  display: grid;
+  height: 100dvh;
+  grid-template-areas: 
+    "sidebar header"
+    "sidebar dropzone"
+    "sidebar footer";
+  grid-template-columns: 1fr 4fr;
+  grid-template-rows: 25px auto 100px;
+  gap: 1rem;
 }
 
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #249b73);
+.sidebar { grid-area: sidebar; }
+.header { grid-area: header; }
+.dropzone {
+  grid-area: dropzone;
+  display: grid;
+  place-items: center;
 }
+.footer { 
+  grid-area: footer; 
+  display: flex;
+  align-items: center;
+  justify-content: end;
+}
+
+.box, .menu {
+  background-color: #f6f6f6;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+}
+
+.box {
+  border-radius: 24px;
+  color: #0f0f0f;
+}
+
+button {
+  height: 3rem;
+}
+
 </style>
