@@ -1,5 +1,8 @@
 <script setup>
 import Dropzone from './components/Dropzone.vue';
+import FileList from './components/FileList.vue';
+
+const bagFiles = true;
 </script>
 
 <template>
@@ -12,8 +15,9 @@ import Dropzone from './components/Dropzone.vue';
 
     </div>
 
-    <div class="dropzone box">
-      <Dropzone />
+    <div class="file-list box">
+      <Dropzone v-if="!bagFiles" />
+      <FileList v-if="bagFiles" />
     </div>
 
     <div class="footer">
@@ -28,7 +32,7 @@ main {
   height: 100dvh;
   grid-template-areas: 
     "sidebar header"
-    "sidebar dropzone"
+    "sidebar file-list"
     "sidebar footer";
   grid-template-columns: 1fr 4fr;
   grid-template-rows: 25px auto 100px;
@@ -37,8 +41,8 @@ main {
 
 .sidebar { grid-area: sidebar; }
 .header { grid-area: header; }
-.dropzone {
-  grid-area: dropzone;
+.file-list {
+  grid-area: file-list;
   display: grid;
   place-items: center;
 }
