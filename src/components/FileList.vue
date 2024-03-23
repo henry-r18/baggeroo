@@ -1,10 +1,9 @@
 <script setup>
+defineProps(['selectedFiles']);
 import prettyBytes from 'pretty-bytes';
 
 const headers = ['Path', 'Size', 'Last Modification Time'];
 
-// TODO: get selectedFiles from store
-import selectedFiles from '../../.testing/dummy_data'
 </script>
 
 <template>
@@ -19,7 +18,7 @@ import selectedFiles from '../../.testing/dummy_data'
       <tr v-for="file in selectedFiles">
         <td>{{ file.path }}</td>
         <td>{{ prettyBytes(file.size) }}</td>
-        <td>{{ new Date(file.mtime) }}</td>
+        <td>{{ new Date(file.mtime).toLocaleString() }}</td>
       </tr>
     </tbody>
   </table>

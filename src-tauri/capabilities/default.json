@@ -14,6 +14,10 @@
     "tray:default",
     "shell:allow-open",
     "dialog:allow-open",
-    "fs:read-meta"
+    "fs:read-meta",
+    "store:allow-set",
+    "store:allow-get",
+    "store:allow-load",
+    "store:allow-save"
   ]
 }

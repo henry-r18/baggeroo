@@ -1,8 +1,5 @@
 <script setup>
-import Dropzone from './components/Dropzone.vue';
-import FileList from './components/FileList.vue';
-
-const bagFiles = true;
+import ViewContainer from './components/ViewContainer.vue';
 </script>
 
 <template>
@@ -16,8 +13,9 @@ const bagFiles = true;
     </div>
 
     <div class="file-list box">
-      <Dropzone v-if="!bagFiles" />
-      <FileList v-if="bagFiles" />
+      <Suspense>
+        <ViewContainer />
+      </Suspense>
     </div>
 
     <div class="footer">
