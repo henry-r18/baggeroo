@@ -290,19 +290,20 @@ dependencies = [
  "bagr",
  "serde",
  "serde_json",
+ "symlink",
  "tauri",
  "tauri-build",
  "tauri-plugin-dialog",
  "tauri-plugin-fs",
  "tauri-plugin-shell",
  "tauri-plugin-store",
+ "tempfile",
 ]
 
 [[package]]
 name = "bagr"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4acbde17699837f5c6a4b55bb0fa2cf21b16d29b9a1cf69525b72bf2cd4c67fd"
+version = "0.4.0-dev"
+source = "git+https://github.com/henry-r18/bagr.git#db44ba65a7740b9963556890537b8d79500543d7"
 dependencies = [
  "ansi_term",
  "atty",
@@ -3659,6 +3660,12 @@ dependencies = [
  "serde",
  "serde_json",
 ]
+
+[[package]]
+name = "symlink"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a7973cce6668464ea31f176d85b13c7ab3bba2cb3b77a2ed26abd7801688010a"
 
 [[package]]
 name = "syn"

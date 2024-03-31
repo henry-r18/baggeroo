@@ -1,11 +1,35 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use bagr::bagit::{ create_bag, DigestAlgorithm, BagInfo };
+use std::path::Path;
+use bagr::bagit::{ create_bag, BagInfo, DigestAlgorithm, Error };
+use tempfile::TempDir;
+
+fn create_symlinks(paths: Vec<&str>) -> Result<TempDir, Error> {
+    let temp_dir = tempfile::Builder::new()
+        .prefix("bagr-").tempdir().expect("Problem creating temp dir.");
+
+    for path in paths {
+        let target_path = Path::new(path);
+        let target_basename = target_path.file_name().expect("Problem parsing supplied path.");
+        let symlink_path = &temp_dir.path().join(target_basename);
+
+        if target_path.is_dir() {
+            symlink::symlink_dir(target_path, symlink_path).expect("Problem creating a directory symlink.");
+        };
+        
+        if target_path.is_file() {
+            symlink::symlink_file(target_path, symlink_path).expect("Problem creating a file symlink.");
+        }
+    }
+    Ok(temp_dir)
+}
 
 #[tauri::command]
-fn run_bagr(payload_path: String, algorithm_strings: Vec<&str>) {
-    println!("Preparing Bag for payload: {}", payload_path);
+fn run_bagr(selected_paths: Vec<&str>, algorithm_strings: Vec<&str>) {
+    let payload_path: TempDir = create_symlinks(selected_paths).expect("Problem creating symlinks for selected paths.");
+
+    println!("Preparing Bag for payload: {:?}", payload_path.path());
     let dst_dir = "/Users/henry/Development/rust-learning/bag-generator/.testing/test_bag";
 
     let mut digest_algorithms = Vec::new();

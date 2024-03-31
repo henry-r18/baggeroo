@@ -1,5 +1,14 @@
 <script setup>
 import ViewContainer from './components/ViewContainer.vue';
+import { ref } from 'vue';
+import { invoke } from '@tauri-apps/api/core';
+import selectedFilesStore from './store';
+
+async function runBagr() {
+  let _selectedPaths = await selectedFilesStore.get("selectedFiles")
+    .then( files => files.map(file => file.path));
+  invoke("run_bagr", { selectedPaths: _selectedPaths, algorithmStrings: ['md5'] });
+}
 </script>
 
 <template>
@@ -19,7 +28,8 @@ import ViewContainer from './components/ViewContainer.vue';
     </div>
 
     <div class="footer">
-      <button>Generate bag</button>
+      <button class="button secondary">Add files</button>
+      <button @click="runBagr">Generate bag</button>
     </div>
   </main>
 </template>
@@ -56,19 +66,24 @@ main {
   box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
 }
 
-@media (prefers-color-scheme: dark) {
-  .box, .menu {
-    background-color: #f6f6f6;
-  }
-}
-
 .box {
   border-radius: 24px;
-  color: #0f0f0f;
+  color: var(--primary);
 }
 
 button {
   height: 3rem;
+  margin: 0.33rem;
+}
+
+.secondary {
+  background-color: var(--secondary);
+};
+
+@media (prefers-color-scheme: dark) {
+  .box, .menu {
+    background-color: #f6f6f6;
+  }
 }
 
 </style>
