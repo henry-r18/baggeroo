@@ -2,13 +2,28 @@
 import ViewContainer from './components/ViewContainer.vue';
 import { ref } from 'vue';
 import { invoke } from '@tauri-apps/api/core';
-import selectedFilesStore from './store';
+import { open } from '@tauri-apps/plugin-dialog';
+import { selectedFilesStore, handleNewFiles } from './store';
 
 async function runBagr() {
   let _selectedPaths = await selectedFilesStore.get("selectedFiles")
     .then( files => files.map(file => file.path));
   invoke("run_bagr", { selectedPaths: _selectedPaths, algorithmStrings: ['md5'] });
 }
+
+async function addFiles() {
+  let fileDialogSelection = await open({
+    multiple: true,
+    title: 'Add files to Bag'
+  }).then(files => files ? files.map(file => file.path) : null);
+
+  if (fileDialogSelection) {
+      handleNewFiles(fileDialogSelection)
+      .catch(error => errorMessage.value = error);
+  }
+}
+
+const errorMessage = ref('');
 </script>
 
 <template>
@@ -23,12 +38,12 @@ async function runBagr() {
 
     <div class="file-list box">
       <Suspense>
-        <ViewContainer />
+        <ViewContainer :containerErrorMessage="errorMessage" />
       </Suspense>
     </div>
 
     <div class="footer">
-      <button class="button secondary">Add files</button>
+      <button class="secondary" @click="addFiles">Add files</button>
       <button @click="runBagr">Generate bag</button>
     </div>
   </main>
