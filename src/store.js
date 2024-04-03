@@ -49,7 +49,7 @@ async function handleNewFiles(paths) {
 async function removeFile(path) {
   try {
     let selectedFiles = await selectedFilesStore.get("selectedFiles");
-    selectedFiles = selectedFiles.filter(selectedFile => !selectedFile.path === path);
+    selectedFiles = selectedFiles.filter(selectedFile => selectedFile.path != path);
     selectedFilesStore.set("selectedFiles", selectedFiles);
   } catch (error) {
     return Promise.reject(error);

@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from 'vue';
+import { removeFile } from '../store'
 import prettyBytes from 'pretty-bytes';
 
 const props = defineProps(['selectedFiles']);
@@ -22,9 +23,14 @@ const totalBytes = computed(() => {
 
       <tbody>
         <tr v-for="file in selectedFiles">
+          <td>
+            <span class="material-icons-outlined" v-show="file.isFile">insert_drive_file</span>
+            <span class="material-icons-outlined" v-show="file.isDirectory">folder</span>
+          </td>
           <td>{{ file.path }}</td>
           <td>{{ prettyBytes(file.size) }}</td>
           <td>{{ new Date(file.mtime).toLocaleString() }}</td>
+          <td><span class="material-icons-outlined remove-icon" @click="removeFile(file.path)">remove_circle_outline</span></td>
         </tr>
       </tbody>
 
@@ -57,5 +63,11 @@ tbody {
 
 a {
   margin-left: auto;
+}
+
+.remove-icon {
+  color: red;
+  font-size: 1rem;
+  cursor: pointer;
 }
 </style>
