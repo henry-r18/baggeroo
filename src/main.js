@@ -1,6 +1,6 @@
 import { createApp } from "vue";
-import "./styles.css";
-import '@material-design-icons/font/outlined.css';
+import './scss/styles.scss';
+import * as bootstrap from 'bootstrap';
 import App from "./App.vue";
 
 createApp(App).mount("#app");

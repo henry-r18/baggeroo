@@ -1,9 +1,9 @@
 <script setup>
-import ViewContainer from './components/ViewContainer.vue';
 import { ref } from 'vue';
 import { invoke } from '@tauri-apps/api/core';
 import { open } from '@tauri-apps/plugin-dialog';
 import { selectedFilesStore, handleNewFiles } from './store';
+import SideMenu from './components/SideMenu.vue';
 
 async function runBagr() {
   let _selectedPaths = await selectedFilesStore.get("selectedFiles")
@@ -24,81 +24,40 @@ async function addFiles() {
 }
 
 const errorMessage = ref('');
+const showMenu = ref(false);
+
 </script>
 
 <template>
-  <main>
-    <div class="sidebar menu">
-    
-    </div>
-
-    <div class="header">
-
-    </div>
-
-    <div class="file-list box">
-      <Suspense>
-        <ViewContainer :containerErrorMessage="errorMessage" />
-      </Suspense>
-    </div>
-
-    <div class="footer">
-      <button class="secondary" @click="addFiles">Add files</button>
-      <button @click="runBagr">Generate bag</button>
-    </div>
-  </main>
+  <div class="grid h-100">
+    <i class="g-col-2 side-menu bi bi-list text-center" @click="showMenu = !showMenu"></i>
+    <SideMenu class="g-col-2" />
+    <div class="g-col-10 header"></div>
+    <div class="g-col-10 dropzone"></div>
+    <div class="g-col-10 footer"></div>
+  </div>
 </template>
 
 <style scoped>
-main {
-  display: grid;
-  height: 100dvh;
-  grid-template-areas: 
-    "sidebar header"
-    "sidebar file-list"
-    "sidebar footer";
-  grid-template-columns: 1fr 4fr;
-  grid-template-rows: 25px auto 100px;
-  gap: 1rem;
+.grid {
+  --bs-columns: 12;
+  --bs-rows: 12;
+  --bs-gap: 1rem 3rem;
 }
 
-.sidebar { grid-area: sidebar; }
-.header { grid-area: header; }
-.file-list {
-  grid-area: file-list;
-  display: grid;
-  place-items: center;
-}
-.footer { 
-  grid-area: footer; 
-  display: flex;
-  align-items: center;
-  justify-content: end;
+.grid > * {
+  border: 1px dotted red;
 }
 
-.box, .menu {
-  background-color: #f1f1f1;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+.side-menu {
+  grid-row: span 12;
 }
 
-.box {
-  border-radius: 24px;
-  color: var(--primary);
+.header, .dropzone, .footer {
+  grid-column-start: 3;
 }
 
-button {
-  height: 3rem;
-  margin: 0.33rem;
+.dropzone {
+  grid-row: span 10;
 }
-
-.secondary {
-  background-color: var(--secondary);
-};
-
-@media (prefers-color-scheme: dark) {
-  .box, .menu {
-    background-color: #f6f6f6;
-  }
-}
-
 </style>
