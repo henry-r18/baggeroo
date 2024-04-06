@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import { invoke } from '@tauri-apps/api/core';
 import { open } from '@tauri-apps/plugin-dialog';
 import { selectedFilesStore, handleNewFiles } from './store';
-import SideMenu from './components/SideMenu.vue';
+import Dropzone from './components/Dropzone.vue';
 
 async function runBagr() {
   let _selectedPaths = await selectedFilesStore.get("selectedFiles")
@@ -29,35 +29,19 @@ const showMenu = ref(false);
 </script>
 
 <template>
-  <div class="grid h-100">
-    <i class="g-col-2 side-menu bi bi-list text-center" @click="showMenu = !showMenu"></i>
-    <SideMenu class="g-col-2" />
-    <div class="g-col-10 header"></div>
-    <div class="g-col-10 dropzone"></div>
-    <div class="g-col-10 footer"></div>
+  <div class="flex flex-col h-full parent">
+    <div class="flex flex-row justify-end items-center p-4 h-16 cursor-pointer">
+      <i class="pi pi-cog" style="font-size: 1.5rem; color: var(--secondary)"></i>
+    </div>
+    <div class="grow">
+      <Dropzone />
+    </div>
+    <div class="h-16">03</div>
   </div>
 </template>
 
 <style scoped>
-.grid {
-  --bs-columns: 12;
-  --bs-rows: 12;
-  --bs-gap: 1rem 3rem;
-}
-
-.grid > * {
+.parent > * {
   border: 1px dotted red;
-}
-
-.side-menu {
-  grid-row: span 12;
-}
-
-.header, .dropzone, .footer {
-  grid-column-start: 3;
-}
-
-.dropzone {
-  grid-row: span 10;
 }
 </style>

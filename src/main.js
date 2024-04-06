@@ -1,6 +1,13 @@
 import { createApp } from "vue";
-import './scss/styles.scss';
-import * as bootstrap from 'bootstrap';
+import "./styles.css";
+import PrimeVue from "primevue/config";
+import "primeicons/primeicons.css";
 import App from "./App.vue";
+import Lara from "./presets/lara";
 
-createApp(App).mount("#app");
+createApp(App)
+.use(PrimeVue, {
+    unstyled: true,
+    pt: Lara
+})
+.mount("#app");
