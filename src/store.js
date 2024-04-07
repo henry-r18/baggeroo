@@ -48,6 +48,7 @@ async function handleNewFiles(paths) {
 // FIX: removing all files when called
 async function removeFile(path) {
   try {
+    console.log(path);
     let selectedFiles = await selectedFilesStore.get("selectedFiles");
     selectedFiles = selectedFiles.filter(selectedFile => selectedFile.path != path);
     selectedFilesStore.set("selectedFiles", selectedFiles);

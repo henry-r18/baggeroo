@@ -42,7 +42,7 @@ html, body {
   text-align: center;
 } */
 
-.logo {
+/* .logo {
   height: 6em;
   padding: 1.5em;
   will-change: filter;
@@ -105,24 +105,10 @@ button {
 
 #greet-input {
   margin-right: 5px;
-}
+} */
 
 @media (prefers-color-scheme: dark) {
   :root {
     color: #f6f6f6;
-    background-color: var(--primary);
-  }
-
-  a:hover {
-    color: #24c8db;
-  }
-
-  input,
-  button {
-    color: #0f0f0f;
-    background-color: var(--tertiary);
-  }
-  button:active {
-    background-color: #0f0f0f69;
   }
 }

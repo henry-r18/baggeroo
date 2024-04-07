@@ -11,10 +11,11 @@ export default {
             {
                 'px-4 py-3': props.size === null,
                 'text-sm py-2 px-3': props.size === 'small',
-                'text-xl py-3 px-4': props.size === 'large'
+                'text-xl py-3 px-4': props.size === 'large',
+                'size-5 text-xs p-0.5': props.size === 'extra-small'
             },
             {
-                'w-12 p-0 py-3': props.label == null && props.icon !== null
+                // 'w-12 p-0 py-3': props.label == null && props.icon !== null
             },
 
             // Shapes
