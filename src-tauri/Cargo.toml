@@ -1,8 +1,8 @@
 [package]
-name = "bag-generator"
-version = "0.0.0"
-description = "A Tauri App"
-authors = ["you"]
+name = "baggeroo"
+version = "0.1.0"
+description = "A Tauri app implementing the BagIt v1.0 specification."
+authors = ["Henry Rosen <herosen@g.ucla.edu>"]
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

@@ -1,13 +1,21 @@
 import { createApp } from "vue";
-import "./styles.css";
 import PrimeVue from "primevue/config";
-import "primeicons/primeicons.css";
+import Aura from '@primevue/themes/aura';
+import "./assets/base.css"
 import App from "./App.vue";
-import Lara from "./presets/lara";
+import { getVersion } from '@tauri-apps/api/app';
+const appVersion = await getVersion();
 
 createApp(App)
 .use(PrimeVue, {
-    unstyled: true,
-    pt: Lara
+    theme: {
+        preset: Aura,
+        options: {
+            prefix: 'p',
+            darkModeSelector: 'system'
+        }
+    },
+    ripple: true
 })
+.provide("appVersion", appVersion )
 .mount("#app");

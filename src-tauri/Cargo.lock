@@ -284,8 +284,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "bag-generator"
-version = "0.0.0"
+name = "baggeroo"
+version = "0.1.0"
 dependencies = [
  "bagr",
  "serde",

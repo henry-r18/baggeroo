@@ -22,7 +22,8 @@ async function getMetadata(paths) {
     if (fileInfo.isDirectory) {
       fileInfo.size = await calculateDirectorySize(path);
     }
-    return { path, ...fileInfo }; // construct metadata object
+    let basename = await Path.basename(path);
+    return { path, basename, ...fileInfo }; // construct metadata object
   });
   return await Promise.all(metadata);
 }

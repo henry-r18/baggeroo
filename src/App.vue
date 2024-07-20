@@ -1,12 +1,13 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, inject } from 'vue';
 import { invoke } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
 import { open } from '@tauri-apps/plugin-dialog';
 import { selectedFilesStore, handleNewFiles } from './store';
 import Dropzone from './components/Dropzone.vue';
-import FileList from './components/FileList.vue';
-import Button from 'primevue/button';
+import FileTree from './components/FileTree.vue';
+
+const appVersion = inject('appVersion');
 
 async function runBagr() {
   let _selectedPaths = await selectedFilesStore.get("selectedFiles")
@@ -42,21 +43,22 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex flex-col h-full parent dark:bg-gradient-to-br from-lime-700 to-lime-900">
-    <div class="flex flex-row justify-end items-center p-4 h-16 cursor-pointer">
+  <main class="flex flex-col h-full">
+
+    <section class="flex flex-row justify-end pe-8 pt-8">
       <i class="pi pi-cog" style="font-size: 1.5rem; color: var(--secondary)"></i>
-    </div>
-    <div class="grow">
-      <Dropzone v-if="!selectedFiles.length" />
-      <FileList v-if="selectedFiles.length" :selected-files="selectedFiles" />
-    </div>
-    <div class="h-20">
-      <div class="flex flex-wrap px-4 gap-2 justify-end">
-        <Button type="button" label="Add files" raised style="background-color: var(--secondary); border-color: var(--secondary);" aria-label="Add files" />
-        <Button type="button" label="Create Bag" raised style="background-color: var(--accent-1); border-color: var(--accent-1);" aria-label="Create Bag" />
-      </div>
-    </div>
-  </div>
+    </section>
+
+    <section class="grow">
+        <Dropzone v-if="!selectedFiles.length" class="h-full flex flex-col items-center justify-center" />
+        <FileTree v-if="selectedFiles.length" :selected-files="selectedFiles" @create-bag="runBagr"/>
+    </section>
+
+    <section class="flex-none">
+        <div class="text-end p-3 text-xs">v{{ appVersion }}</div>
+    </section>
+
+  </main>
 </template>
 
 <style scoped>

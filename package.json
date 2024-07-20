@@ -1,5 +1,5 @@
 {
-  "name": "bag-generator",
+  "name": "baggeroo",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,22 +10,26 @@
     "tauri": "tauri"
   },
   "dependencies": {
+    "@primevue/themes": "^4.0.0",
     "@tauri-apps/api": ">=2.0.0-beta.0",
     "@tauri-apps/plugin-dialog": "^2.0.0-beta.2",
     "@tauri-apps/plugin-fs": "^2.0.0-beta.2",
     "@tauri-apps/plugin-shell": ">=2.0.0-beta.0",
     "@tauri-apps/plugin-store": "^2.0.0-beta.2",
     "pretty-bytes": "^6.1.1",
+    "primeflex": "^3.3.1",
     "primeicons": "^7.0.0",
-    "primevue": "^3.51.0",
+    "primevue": "^4.0.0",
     "vue": "^3.3.4"
   },
   "devDependencies": {
+    "@primevue/auto-import-resolver": "^4.0.0",
     "@tauri-apps/cli": ">=2.0.0-beta.0",
     "@vitejs/plugin-vue": "^5.0.4",
     "autoprefixer": "^10.4.19",
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.3",
+    "unplugin-vue-components": "^0.27.3",
     "vite": "^5.0.0"
   }
 }
