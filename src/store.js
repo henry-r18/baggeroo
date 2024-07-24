@@ -4,43 +4,62 @@ import { path as Path } from "@tauri-apps/api";
 
 const selectedFilesStore = new Store("./selectedFiles.json");
 
-// TODO: make recursive
-async function calculateDirectorySize(path) {
-  let sum = 0;
-  let entries = await readDir(path);
-  for (const entry of entries) {
-    let entryPath = await Path.join(path, entry.name);
-    let fileInfo = await stat(entryPath);
-    sum += fileInfo.size;
+class BagEntry {
+  constructor(path, basename, fileInfo, children) {
+    this.path = path;
+    this.basename = basename;
+    this.fileInfo = fileInfo;
+    this.children = children;
+    this.isDotfile = this.basename.startsWith(".");
   }
-  return sum;
+
+  calcTotalSize() {
+    if (this.children && this.children.length) {
+      let sizes = this.children.map( child => {
+        if (child.fileInfo.isDirectory) {
+
+        }
+      })
+      for (const child in this.children) {
+        let size = reduce( (acc, cur) => acc + cur.fileInfo.size, 0);
+      }
+    }
+  }
 }
 
-async function getMetadata(paths) {
-  let metadata = paths.map(async (path) => {
-    let fileInfo = await stat(path); // stat() returns FileInfo object
-    if (fileInfo.isDirectory) {
-      fileInfo.size = await calculateDirectorySize(path);
-    }
-    let basename = await Path.basename(path);
-    return { path, basename, ...fileInfo }; // construct metadata object
-  });
-  return await Promise.all(metadata);
+async function createBagEntry(path) {
+  let basename = await Path.basename(path);
+  let fileInfo = await stat(path).catch(reason => console.log(reason));
+  let children = null;
+  if (fileInfo && fileInfo.isDirectory) {
+    let entries = await readDir(path);
+    children = await Promise.all(
+      entries.map( async entry => createBagEntry( await Path.join(path, entry.name) ))
+    );
+  }
+  return new BagEntry(path, basename, fileInfo, children);
 }
 
 async function handleNewFiles(paths) {
   try {
     let selectedFiles = await selectedFilesStore.get("selectedFiles");
-    let filteredPaths = paths.filter( path => 
+
+    const filteredPaths = paths.filter( path => 
       !selectedFiles.some( 
         selectedFile => selectedFile.path === path
     )); // filter out paths already in Bag
-    if (filteredPaths.length) {
-      selectedFiles = [...selectedFiles, ...await getMetadata(filteredPaths)];
-      selectedFilesStore.set("selectedFiles", selectedFiles);
-    } else {
+
+    if (!filteredPaths.length) {
       throw Error("Path(s) already in Bag.");
     }
+    
+    const newBagEntries = await Promise.all(
+      filteredPaths.map( async filteredPath => await createBagEntry(filteredPath))
+    );
+    
+    selectedFiles = [...selectedFiles, ...newBagEntries];
+
+    selectedFilesStore.set("selectedFiles", selectedFiles);
   } catch (error) {
     return Promise.reject(error);
   }

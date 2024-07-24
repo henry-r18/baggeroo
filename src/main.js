@@ -1,10 +1,11 @@
-import { createApp } from "vue";
+import { createApp, ref } from "vue";
 import PrimeVue from "primevue/config";
 import Aura from '@primevue/themes/aura';
 import "./assets/base.css"
 import App from "./App.vue";
 import { getVersion } from '@tauri-apps/api/app';
-const appVersion = await getVersion();
+const appVersion = ref();
+getVersion().then( version => appVersion.value = version);
 
 createApp(App)
 .use(PrimeVue, {

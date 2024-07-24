@@ -9,10 +9,10 @@ import FileTree from './components/FileTree.vue';
 
 const appVersion = inject('appVersion');
 
-async function runBagr() {
+async function runBagr(targetDirectory) {
   let _selectedPaths = await selectedFilesStore.get("selectedFiles")
     .then( files => files.map(file => file.path));
-  invoke("run_bagr", { selectedPaths: _selectedPaths, algorithmStrings: ['md5'] });
+  invoke("run_bagr", { selectedPaths: _selectedPaths, algorithmStrings: ['md5'], targetDirectory: targetDirectory });
 }
 
 async function addFiles() {
@@ -51,7 +51,15 @@ onMounted(async () => {
 
     <section class="grow">
         <Dropzone v-if="!selectedFiles.length" class="h-full flex flex-col items-center justify-center" />
-        <FileTree v-if="selectedFiles.length" :selected-files="selectedFiles" @create-bag="runBagr"/>
+
+        <Suspense>
+          <FileTree v-if="selectedFiles.length" :selected-files="selectedFiles" @create-bag="(targetDirectory) => runBagr(targetDirectory)" />
+          
+          <template #fallback>
+            <ProgressSpinner />
+          </template>
+        </Suspense>
+        
     </section>
 
     <section class="flex-none">

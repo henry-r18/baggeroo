@@ -26,11 +26,10 @@ fn create_symlinks(paths: Vec<&str>) -> Result<TempDir, Error> {
 }
 
 #[tauri::command]
-fn run_bagr(selected_paths: Vec<&str>, algorithm_strings: Vec<&str>) {
+fn run_bagr(selected_paths: Vec<&str>, target_directory:&str, algorithm_strings: Vec<&str>) {
     let payload_path: TempDir = create_symlinks(selected_paths).expect("Problem creating symlinks for selected paths.");
 
-    println!("Preparing Bag for payload: {:?}", payload_path.path());
-    let dst_dir = "/Users/henry/Development/rust-learning/bag-generator/.testing/test_bag";
+    println!("Preparing Bag...");
 
     let mut digest_algorithms = Vec::new();
 
@@ -41,7 +40,7 @@ fn run_bagr(selected_paths: Vec<&str>, algorithm_strings: Vec<&str>) {
         }
     }
 
-    match create_bag(payload_path, dst_dir, BagInfo::new(), &digest_algorithms, false) {
+    match create_bag(payload_path, target_directory, BagInfo::new(), &digest_algorithms, false) {
         Ok(_bag) => {
             println!("Bag created successfully!");
             // Further operations with the created bag...
