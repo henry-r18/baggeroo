@@ -4,8 +4,8 @@ import { invoke } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
 import { open } from '@tauri-apps/plugin-dialog';
 import { selectedFilesStore, handleNewFiles } from './store';
-import Dropzone from './components/Dropzone.vue';
-import FileTree from './components/FileTree.vue';
+import Menu from './components/Menu.vue';
+import NewBagStepper from './components/NewBagStepper.vue';
 
 const appVersion = inject('appVersion');
 
@@ -45,12 +45,12 @@ onMounted(async () => {
 <template>
   <main class="flex flex-col h-full">
 
-    <section class="flex flex-row justify-end pe-8 pt-8">
-      <i class="pi pi-cog" style="font-size: 1.5rem; color: var(--secondary)"></i>
+    <section>
+      <Menu />
     </section>
 
     <section class="grow">
-        <Dropzone v-if="!selectedFiles.length" class="h-full flex flex-col items-center justify-center" />
+        <!-- <Dropzone v-if="!selectedFiles.length" class="h-full flex flex-col items-center justify-center" />
 
         <Suspense>
           <FileTree v-if="selectedFiles.length" :selected-files="selectedFiles" @create-bag="(targetDirectory) => runBagr(targetDirectory)" />
@@ -58,7 +58,9 @@ onMounted(async () => {
           <template #fallback>
             <ProgressSpinner />
           </template>
-        </Suspense>
+        </Suspense> -->
+
+        <NewBagStepper></NewBagStepper>
         
     </section>
 

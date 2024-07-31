@@ -1,8 +1,5 @@
 <script setup>
 import { ref } from "vue";
-import Card from "primevue/card";
-import Toolbar from "primevue/toolbar";
-import Panel from "primevue/panel";
 import { listen } from "@tauri-apps/api/event";
 
 const animateFileDropIcon = ref(false);
