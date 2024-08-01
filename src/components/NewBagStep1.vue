@@ -2,8 +2,9 @@
 import { computed } from "vue";
 import prettyBytes from "pretty-bytes";
 
-const props = defineProps(['selectedFiles', 'newBag']);
+const props = defineProps(['newBag']);
 defineEmits(['stepButtonClicked']);
+
 const selectedFilesTree = computed(() => {
   const sortTreeNodes = (a, b) => {
     const aIsDirectory = a.data && a.data.isDirectory;
@@ -36,7 +37,7 @@ const selectedFilesTree = computed(() => {
     };
   };
 
-  let selectedFilesTreeNodes = props.selectedFiles
+  let selectedFilesTreeNodes = props.newBag.bagEntries
     .filter((bagEntry) => !bagEntry.isDotfile)
     .map((bagEntry) => createNodeFromBagEntry(bagEntry))
     .sort(sortTreeNodes);
@@ -59,9 +60,9 @@ const selectedFilesTreeExpandedKeys = {
 </script>
 
 <template>
-  <Dropzone v-if="!selectedFiles.length" class="h-full flex flex-col items-center justify-center" />
+  <Dropzone v-if="!newBag.bagEntries.length" class="h-full flex flex-col items-center justify-center" />
 
-  <Card v-if="selectedFiles.length" :pt="{ root: 'flex flex-col h-full', body: 'grow', content: 'grow' }">
+  <Card v-if="newBag.bagEntries.length" :pt="{ root: 'flex flex-col h-full', body: 'grow', content: 'grow' }">
     <template #title>
       <p>Bag Payload</p>
       <p class="text-sm text-slate-400">Total size: {{ prettyBytes(newBag.totalBytes) }}</p>

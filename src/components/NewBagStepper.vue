@@ -1,18 +1,24 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { selectedFilesStore, Bag } from '../store';
+import { ref, reactive, watch, onMounted } from 'vue';
+import { selectedFilesStore, handleNewFiles } from '../store';
+import { listen } from '@tauri-apps/api/event';
+import Bag from '../Bag';
 import NewBagStepOne from './NewBagStep1.vue';
 import NewBagStepTwo from './NewBagStep2.vue';
 import NewBagStepThree from './NewBagStep3.vue';
 
-const selectedFiles = ref([]);
-
-const newBag = computed(() => new Bag(selectedFiles.value));
+const bagEntries = ref([]);
+const newBag = reactive( new Bag() );
+watch(bagEntries, (newBagEntries) => newBag.bagEntries = newBagEntries);
 
 onMounted(async () => {
-  selectedFiles.value = await selectedFilesStore.get('selectedFiles'); // load from store on component setup
-  selectedFilesStore.onKeyChange("selectedFiles", (_selectedFiles) => selectedFiles.value = _selectedFiles); // reload when value changes for key in store
+  bagEntries.value = await selectedFilesStore.get('selectedFiles'); // load from store on component setup
+  selectedFilesStore.onKeyChange("selectedFiles", (_selectedFiles) => bagEntries.value = _selectedFiles); // reload when value changes for key in store
 });
+
+const errorMessage = ref('');
+listen('tauri://file-drop', event => handleNewFiles(event.payload.paths)
+  .catch(error => errorMessage.value = error));
 </script>
 
 <template>
@@ -26,7 +32,7 @@ onMounted(async () => {
 
         <StepPanels class="grow">
             <StepPanel class="h-full" v-slot="{ activateCallback }" value="1">
-              <NewBagStepOne :selected-files="selectedFiles" :new-bag="newBag" @step-button-clicked="(index) => activateCallback(index)" />
+              <NewBagStepOne :new-bag="newBag" @step-button-clicked="(index) => activateCallback(index)" />
             </StepPanel>
 
             <StepPanel class="h-full" v-slot="{ activateCallback }" value="2">
@@ -39,4 +45,6 @@ onMounted(async () => {
         </StepPanels>
 
     </Stepper>
+
+    {{ errorMessage }}
 </template>

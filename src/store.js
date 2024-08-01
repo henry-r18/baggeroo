@@ -1,88 +1,13 @@
+import { ref } from "vue";
 import { Store } from "@tauri-apps/plugin-store";
 import { stat, readDir } from "@tauri-apps/plugin-fs";
 import { path as Path } from "@tauri-apps/api";
+import BagEntry from "./BagEntry";
 
-const appDataDir = await Path.appDataDir();
+const appDataDir = ref('');
+// Path.appDataDir().then( result => appDataDir.value = result);
 const selectedFilesStore = new Store("./selectedFiles.json");
 const bagStore = new Store(`${appDataDir}/bags.json`);
-
-class Bag {
-  constructor(bagEntries, bagInfo, digestAlgorithms, targetDirectory) {
-    this.bagEntries = bagEntries;
-    this.bagInfo = bagInfo;
-    this.digestAlgorithms = digestAlgorithms;
-    this.targetDirectory = targetDirectory;
-  }
-
-  get totalBytes() {
-    return this.#calculateTotalBytes(this.bagEntries);
-  }
-
-  get fileCount() {
-    return this.#calculateFileCount(this.bagEntries);
-  }
-
-  #calculateTotalBytes = (bagEntries) => {
-    let sizeSum = 0;
-
-    function traverseBagEntries(bagEntries) {
-      bagEntries.forEach((bagEntry) => {
-        if (bagEntry.fileInfo) {
-          sizeSum += bagEntry.fileInfo.size;
-        }
-  
-        if (bagEntry.children) {
-          traverseBagEntries(bagEntry.children);
-        }
-      });
-    }
-  
-    traverseBagEntries(bagEntries);
-    return sizeSum;
-  }
-
-  #calculateFileCount = (bagEntries) => {
-    let fileCount = 0;
-
-    function traverseBagEntries(bagEntries) {
-      bagEntries.forEach(bagEntry => {
-        if (bagEntry.fileInfo && !bagEntry.isDotfile) {
-          fileCount++
-        }
-
-        if (bagEntry.children) {
-          traverseBagEntries(bagEntry.children)
-        }
-      })
-    }
-
-    traverseBagEntries(bagEntries);
-    return fileCount;
-  }
-}
-
-class BagEntry {
-  constructor(path, basename, fileInfo, children) {
-    this.path = path;
-    this.basename = basename;
-    this.fileInfo = fileInfo;
-    this.children = children;
-    this.isDotfile = this.basename.startsWith(".");
-  }
-
-  calcTotalSize() {
-    if (this.children && this.children.length) {
-      let sizes = this.children.map( child => {
-        if (child.fileInfo.isDirectory) {
-
-        }
-      })
-      for (const child in this.children) {
-        let size = reduce( (acc, cur) => acc + cur.fileInfo.size, 0);
-      }
-    }
-  }
-}
 
 async function createBagEntry(path) {
   let basename = await Path.basename(path);
@@ -136,4 +61,4 @@ async function removeFile(path) {
 
 selectedFilesStore.set("selectedFiles", [])
 
-export { selectedFilesStore, bagStore, Bag, handleNewFiles, removeFile };
+export { selectedFilesStore, bagStore, handleNewFiles, removeFile };

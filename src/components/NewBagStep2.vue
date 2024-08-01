@@ -1,21 +1,38 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { open } from "@tauri-apps/plugin-dialog";
 import { homeDir } from "@tauri-apps/api/path";
 import prettyBytes from "pretty-bytes";
 import { testProfile } from "../../.testing/test-profile";
 
-const props = defineProps(['newBag']);
-defineEmits(['stepButtonClicked']);
+const props = defineProps(["newBag"]);
+defineEmits(["stepButtonClicked"]);
 
 testProfile.sort((a, b) => a.label.localeCompare(b.label));
-testProfile.find( item => item.label == 'Bagging-Date' ).value = new Date().toISOString().split('T')[0]
-testProfile.find( item => item.label == 'Bag-Size' ).value = prettyBytes(props.newBag.totalBytes)
-testProfile.find( item => item.label == 'Bag-Size' ).disabled = true
-testProfile.find( item => item.label == 'Payload-Oxum' ).value = `${props.newBag.totalBytes}.${props.newBag.fileCount}`
-testProfile.find( item => item.label == 'Payload-Oxum' ).disabled = true
+testProfile.find((item) => item.label == "Bagging-Date").value = new Date()
+  .toISOString()
+  .split("T")[0];
+testProfile.find((item) => item.label == "Bag-Size").value = prettyBytes(
+  props.newBag.totalBytes
+);
+testProfile.find((item) => item.label == "Bag-Size").disabled = true;
+testProfile.find(
+  (item) => item.label == "Payload-Oxum"
+).value = `${props.newBag.totalBytes}.${props.newBag.fileCount}`;
+testProfile.find((item) => item.label == "Payload-Oxum").disabled = true;
 
-const selectedDigestAlgorithms = ref(['sha512']);
+const bagInfoSet = ref(false);
+const setBagInfo = () => {
+  props.newBag.bagInfo = testProfile
+  .filter( item => item.value )
+  .map( item => {
+    const { label, value } = item;
+    return { label, value };
+  });
+  bagInfoSet.value = true;
+};
+
+const selectedDigestAlgorithms = ref(["sha512"]);
 const digestAlgorithmOptions = ref([
   {
     label: "MD5",
@@ -31,7 +48,7 @@ const digestAlgorithmOptions = ref([
   },
   {
     label: "SHA-512",
-    value: "sha512"
+    value: "sha512",
   },
   {
     label: "BLAKE2b-256",
@@ -42,6 +59,10 @@ const digestAlgorithmOptions = ref([
     value: "blake2b512",
   },
 ]);
+watch(
+  selectedDigestAlgorithms,
+  (newSelection) => (props.newBag.digestAlgorithms = newSelection)
+, {immediate: true});
 
 const targetDirectory = ref("");
 let setTargetDirectory = () =>
@@ -51,6 +72,10 @@ let setTargetDirectory = () =>
   })
     .then((directory) => (targetDirectory.value = directory))
     .catch((error) => console.log(error));
+watch(
+  targetDirectory,
+  (newTargetDirectory) => (props.newBag.targetDirectory = newTargetDirectory)
+);
 
 onMounted(async () => {
   targetDirectory.value = await homeDir();
@@ -58,16 +83,27 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Card :pt="{ root: 'h-full', body: 'h-full', content: 'h-full' }">
+  <Card :pt="{ root: 'h-full', body: 'h-full', content: 'h-full', title: 'flex gap-4' }">
     <template #title>
       <p>Bag Info</p>
+
+      <Button
+        label="Set Bag Info"
+        severity="info"
+        @click="setBagInfo"
+      />
+
+      <p v-show="bagInfoSet">Bag info set</p>
     </template>
 
     <template #content>
-      <ScrollPanel >
+      <ScrollPanel>
         <Fieldset
           legend="Export Settings"
-          :pt="{ contentContainer: 'p-4', content: 'flex items-center justify-between gap-4' }"
+          :pt="{
+            contentContainer: 'p-4',
+            content: 'flex items-center justify-between gap-4',
+          }"
         >
           <div class="flex items-center gap-2">
             <Button

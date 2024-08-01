@@ -303,7 +303,7 @@ dependencies = [
 [[package]]
 name = "bagr"
 version = "0.4.0-dev"
-source = "git+https://github.com/henry-r18/bagr.git#db44ba65a7740b9963556890537b8d79500543d7"
+source = "git+https://github.com/henry-r18/bagr.git#7c1dfbf83eb3549bbf5bf501c781a633b68898f9"
 dependencies = [
  "ansi_term",
  "atty",
@@ -317,6 +317,7 @@ dependencies = [
  "md-5",
  "once_cell",
  "regex",
+ "serde",
  "sha-1",
  "sha2",
  "snafu",
@@ -2149,7 +2150,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0c2a198fb6b0eada2a8df47933734e6d35d350665a33a3593d7164fa52c75c19"
 dependencies = [
  "cfg-if",
- "windows-targets 0.52.4",
+ "windows-targets 0.48.5",
 ]
 
 [[package]]

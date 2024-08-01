@@ -1,5 +1,6 @@
 {
   "productName": "baggeroo",
+  "version": "../package.json",
   "identifier": "com.baggeroo.dev",
   "build": {
     "beforeDevCommand": "npm run dev",

@@ -1,8 +1,8 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use std::path::Path;
-use bagr::bagit::{ create_bag, BagInfo, DigestAlgorithm, Error };
+use std::{io::Error, path::Path};
+use bagr::bagit::{ create_bag, BagInfo, DigestAlgorithm, TagList };
 use tempfile::TempDir;
 
 fn create_symlinks(paths: Vec<&str>) -> Result<TempDir, Error> {
@@ -26,10 +26,13 @@ fn create_symlinks(paths: Vec<&str>) -> Result<TempDir, Error> {
 }
 
 #[tauri::command]
-fn run_bagr(selected_paths: Vec<&str>, target_directory:&str, algorithm_strings: Vec<&str>) {
-    let payload_path: TempDir = create_symlinks(selected_paths).expect("Problem creating symlinks for selected paths.");
+fn run_bagr(selected_paths: Vec<&str>, target_directory:&str, tags_list: TagList, algorithm_strings: Vec<&str>) {
 
     println!("Preparing Bag...");
+    
+    let payload_path: TempDir = create_symlinks(selected_paths).expect("Problem creating symlinks for selected paths.");
+
+    let bag_info: BagInfo = BagInfo::with_tags(tags_list);
 
     let mut digest_algorithms = Vec::new();
 
@@ -40,7 +43,7 @@ fn run_bagr(selected_paths: Vec<&str>, target_directory:&str, algorithm_strings:
         }
     }
 
-    match create_bag(payload_path, target_directory, BagInfo::new(), &digest_algorithms, false) {
+    match create_bag(payload_path, target_directory, bag_info, &digest_algorithms, false) {
         Ok(_bag) => {
             println!("Bag created successfully!");
             // Further operations with the created bag...
@@ -50,6 +53,8 @@ fn run_bagr(selected_paths: Vec<&str>, target_directory:&str, algorithm_strings:
             // Handle the error...
         }
     }
+
+    return;
 }
 
 fn main() {
