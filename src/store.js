@@ -47,12 +47,35 @@ async function handleNewFiles(paths) {
   }
 }
 
-// FIX: removing all files when called
-async function removeFile(path) {
+/**
+ * 
+ * @param {Array<String>} path Path of file to remove
+ */
+async function removeFiles(paths) {
+
+  const traverseBagEntries = (bagEntries) => {
+    paths.forEach( path => {
+      let foundBagEntryIndex = bagEntries.findIndex( bagEntry => {
+        let pathMatch = bagEntry.path === path;
+  
+        if (!pathMatch && bagEntry.children && bagEntry.children.length) {
+          traverseBagEntries(bagEntry.children);
+        }
+  
+        return pathMatch;
+      });
+      console.log(foundBagEntryIndex)
+      if (foundBagEntryIndex != -1) {
+        bagEntries.splice(foundBagEntryIndex, 1);
+      }
+    });
+    
+    return bagEntries;
+  };
+
   try {
-    console.log(path);
     let selectedFiles = await selectedFilesStore.get("selectedFiles");
-    selectedFiles = selectedFiles.filter(selectedFile => selectedFile.path != path);
+    selectedFiles = traverseBagEntries(selectedFiles);
     selectedFilesStore.set("selectedFiles", selectedFiles);
   } catch (error) {
     return Promise.reject(error);
@@ -61,4 +84,4 @@ async function removeFile(path) {
 
 selectedFilesStore.set("selectedFiles", [])
 
-export { selectedFilesStore, bagStore, handleNewFiles, removeFile };
+export { selectedFilesStore, bagStore, handleNewFiles, removeFiles };

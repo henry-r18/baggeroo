@@ -26,7 +26,7 @@ fn create_symlinks(paths: Vec<&str>) -> Result<TempDir, Error> {
 }
 
 #[tauri::command]
-fn run_bagr(selected_paths: Vec<&str>, target_directory:&str, tags_list: TagList, algorithm_strings: Vec<&str>) {
+fn run_bagr(selected_paths: Vec<&str>, target_directory:&str, tags_list: TagList, algorithm_strings: Vec<&str>) -> bool{
 
     println!("Preparing Bag...");
     
@@ -46,15 +46,13 @@ fn run_bagr(selected_paths: Vec<&str>, target_directory:&str, tags_list: TagList
     match create_bag(payload_path, target_directory, bag_info, &digest_algorithms, false) {
         Ok(_bag) => {
             println!("Bag created successfully!");
-            // Further operations with the created bag...
+            return true;
         }
         Err(err) => {
             eprintln!("Error creating bag: {}", err);
-            // Handle the error...
+            return false;
         }
     }
-
-    return;
 }
 
 fn main() {

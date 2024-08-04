@@ -1,15 +1,26 @@
 <script setup>
+import { ref } from 'vue';
+import { useToast } from "primevue/usetoast";
 import { invoke } from '@tauri-apps/api/core';
 
 const props = defineProps(['newBag']);
 
+const loading = ref(false);
+const toast = useToast();
+
 const runBagr = () => {
+  loading.value = true;
   invoke("run_bagr", { 
     selectedPaths: props.newBag.bagEntries.map( entry => entry.path ),
     tagsList: { "tags": props.newBag.bagInfo },
     algorithmStrings: props.newBag.digestAlgorithms,
     targetDirectory: props.newBag.targetDirectory
-  }).then(result => console.log(result));
+  }).then(result => {
+    result ? 
+      toast.add({ severity: 'success', summary: 'Success!', detail: 'The bag was created successfully', life: 3000 })
+      : toast.add({ severity: 'error', summary: 'Error', detail: 'A problem occurred while attempting to create the bag', life: 3000 });
+    loading.value = false;
+  });
 }
 
 </script>
@@ -35,17 +46,20 @@ const runBagr = () => {
         <template #start>
           <Button
             label="Back"
+            severity="secondary"
             icon="pi pi-arrow-left"
             iconPos="left"
-            severity="secondary"
+            :disabled="loading"
             raised
             @click="$emit('stepButtonClicked', '2')"
           />
         </template>
 
         <template #end>
+          <Toast />
           <Button
             label="Create Bag!"
+            :loading="loading"
             raised
             @click="runBagr"
           />

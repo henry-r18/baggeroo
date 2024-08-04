@@ -3,36 +3,43 @@ import { ref, onMounted, watch } from "vue";
 import { open } from "@tauri-apps/plugin-dialog";
 import { homeDir } from "@tauri-apps/api/path";
 import prettyBytes from "pretty-bytes";
-import { testProfile } from "../../.testing/test-profile";
+import { defaultProfile } from "../../public/default-profile";
 
 const props = defineProps(["newBag"]);
 defineEmits(["stepButtonClicked"]);
 
-testProfile.sort((a, b) => a.label.localeCompare(b.label));
-testProfile.find((item) => item.label == "Bagging-Date").value = new Date()
-  .toISOString()
-  .split("T")[0];
-testProfile.find((item) => item.label == "Bag-Size").value = prettyBytes(
-  props.newBag.totalBytes
-);
-testProfile.find((item) => item.label == "Bag-Size").disabled = true;
-testProfile.find(
-  (item) => item.label == "Payload-Oxum"
-).value = `${props.newBag.totalBytes}.${props.newBag.fileCount}`;
-testProfile.find((item) => item.label == "Payload-Oxum").disabled = true;
+const prepareProfile = (profile) => {
+  profile.sort((a, b) => a.label.localeCompare(b.label));
 
-const bagInfoSet = ref(false);
-const setBagInfo = () => {
-  props.newBag.bagInfo = testProfile
-  .filter( item => item.value )
-  .map( item => {
-    const { label, value } = item;
-    return { label, value };
-  });
-  bagInfoSet.value = true;
+  profile.find((item) => item.label == "Bagging-Date").value = new Date()
+    .toISOString()
+    .split("T")[0];
+
+  profile.find((item) => item.label == "Bag-Size").value = prettyBytes(
+    props.newBag.totalBytes
+  );
+
+  profile.find((item) => item.label == "Bag-Size").disabled = true;
+
+  profile.find(
+    (item) => item.label == "Payload-Oxum"
+  ).value = `${props.newBag.totalBytes}.${props.newBag.fileCount}`;
+
+  profile.find((item) => item.label == "Payload-Oxum").disabled = true;
+  
+  return profile;
 };
+const tagsList = ref(prepareProfile(defaultProfile));
+watch(tagsList, (newTagsList) => {
+  props.newBag.bagInfo = newTagsList
+    .filter((item) => item.value)
+    .map((item) => {
+      const { label, value } = item;
+      return { label, value };
+    });
+}, {deep: true});
 
-const selectedDigestAlgorithms = ref(["sha512"]);
+const selectedDigestAlgorithms = ref(props.newBag.digestAlgorithms);
 const digestAlgorithmOptions = ref([
   {
     label: "MD5",
@@ -62,9 +69,9 @@ const digestAlgorithmOptions = ref([
 watch(
   selectedDigestAlgorithms,
   (newSelection) => (props.newBag.digestAlgorithms = newSelection)
-, {immediate: true});
+);
 
-const targetDirectory = ref("");
+const targetDirectory = ref(props.newBag.targetDirectory);
 let setTargetDirectory = () =>
   open({
     title: "Set target directory for Bag",
@@ -78,22 +85,30 @@ watch(
 );
 
 onMounted(async () => {
-  targetDirectory.value = await homeDir();
+  // if not defined on newBag, set defaults for target directory and digests
+  !props.newBag.targetDirectory
+    ? (targetDirectory.value = await homeDir())
+    : null;
+  !props.newBag.digestAlgorithms
+    ? (selectedDigestAlgorithms.value = ["sha512"])
+    : null;
+  !props.newBag.bagInfo.length
+    ? (tagsList.value = prepareProfile(defaultProfile))
+    : null;
 });
 </script>
 
 <template>
-  <Card :pt="{ root: 'h-full', body: 'h-full', content: 'h-full', title: 'flex gap-4' }">
+  <Card
+    :pt="{
+      root: 'h-full',
+      body: 'h-full',
+      content: 'h-full',
+      title: 'flex gap-4',
+    }"
+  >
     <template #title>
       <p>Bag Info</p>
-
-      <Button
-        label="Set Bag Info"
-        severity="info"
-        @click="setBagInfo"
-      />
-
-      <p v-show="bagInfoSet">Bag info set</p>
     </template>
 
     <template #content>
@@ -132,14 +147,13 @@ onMounted(async () => {
         </Fieldset>
 
         <Fieldset
-          legend="Profile"
-          :pt="{ content: 'grid grid-cols-2 gap-2 max-h-96' }"
+          legend="Tags"
+          :pt="{ content: 'grid grid-cols-1 md:grid-cols-2 gap-2' }"
         >
-          <div
-            class="flex items-center justify-end gap-2"
-            v-for="field in testProfile"
-          >
-            <label :for="field.label">{{ field.label }}:</label>
+          <div class="grid grid-cols-2 gap-2" v-for="field in tagsList">
+            <label class="justify-self-end" :for="field.label"
+              >{{ field.label }}:</label
+            >
             <InputText
               :id="field.label"
               v-model="field.value"
