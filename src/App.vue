@@ -1,9 +1,13 @@
 <script setup>
-import { inject } from 'vue';
+import { ref, inject } from 'vue';
 import Menu from './components/Menu.vue';
 import NewBagStepper from './components/NewBagStepper.vue';
+import HelpDialog from './components/HelpDialog.vue';
 
 const appVersion = inject('appVersion');
+
+const showHelp = ref(false);
+const showSettings = ref(false);
 
 </script>
 
@@ -11,11 +15,13 @@ const appVersion = inject('appVersion');
   <main class="flex flex-col h-full">
 
     <section>
-      <Menu />
+      <Menu @help-button-clicked="showHelp = true" @settings-button-clicked="showSettings = true" />
     </section>
 
     <section class="grow">
         <NewBagStepper></NewBagStepper>
+        <HelpDialog v-if="showHelp" :show-help="showHelp" />
+        <SettingsDialog v-if="showSettings" :show-settings="showSettings" />
     </section>
 
     <section class="flex-none">
