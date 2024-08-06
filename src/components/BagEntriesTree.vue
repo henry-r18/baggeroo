@@ -2,7 +2,7 @@
 import { ref, computed } from "vue";
 import { removeFiles } from "../store";
 
-const props = defineProps(["newBag"]);
+const props = defineProps(["newBag","readOnly"]);
 
 const selectedFilesTree = computed(() => {
   const sortTreeNodes = (a, b) => {
@@ -72,6 +72,7 @@ const selectedNodeDesignTokens = ref({
 <template>
 
     <Button
+    v-if="!readOnly"
     label="Remove Selected"
     :severity="Object.keys(selectedKeys).length ? 'danger': 'secondary'"
     :disabled="!Object.keys(selectedKeys).length"
@@ -85,7 +86,7 @@ const selectedNodeDesignTokens = ref({
     :value="selectedFilesTree"
     :expandedKeys="selectedFilesTreeExpandedKeys"
     v-model:selectionKeys="selectedKeys"
-    selectionMode="multiple"
+    :selectionMode="!readOnly ? 'multiple' : null"
     :metaKeySelection="true"
     :dt="selectedNodeDesignTokens"
   />

@@ -16,7 +16,8 @@ listen(
       class="pi pi-file-import border rounded-full p-8 !text-7xl"
       :class="{ 'animate-pulse': animateFileDropIcon }"
     ></i>
-    <p class="mt-4 mb-0">Drag and drop files here to add to Bag.</p>
+    <p class="mt-4 mb-0">Drag and drop files here to add to Bag</p>
+    <!-- <p class="justify-self-start">or select files.</p> -->
   </div>
 </template>
 

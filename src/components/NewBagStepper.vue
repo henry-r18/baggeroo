@@ -22,7 +22,7 @@ listen('tauri://file-drop', event => handleNewFiles(event.payload.paths)
 </script>
 
 <template>
-    <Stepper class="flex flex-col h-full p-8" value="1" linear>
+    <Stepper class="flex flex-col h-full px-4" value="1" linear>
 
         <StepList>
             <Step value="1">Select Files</Step>

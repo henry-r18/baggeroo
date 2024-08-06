@@ -17,7 +17,7 @@ defineEmits(['stepButtonClicked']);
     </template>
 
     <template #content>
-      <BagEntriesTree :new-bag="newBag"></BagEntriesTree>
+      <BagEntriesTree :new-bag="newBag" />
     </template>
 
     <template #footer>

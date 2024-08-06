@@ -32,12 +32,26 @@ const runBagr = () => {
     </template>
 
     <template #content>
-      <ul class="list-none">
-        <li>Bag Paths: {{ newBag.bagEntries.map( entry => entry.path ) }}</li>
-        <li>Target Directory: {{ newBag.targetDirectory }}</li>
-        <li>Bag Info: {{ newBag.bagInfo }}</li>
-        <li>Hash Algorithms: {{ newBag.digestAlgorithms }}</li>
-      </ul>
+      <div class="flex h-full">
+        <BagEntriesTree :new-bag="newBag" :read-only="true"/>
+
+        <Fieldset class="grow" legend="Configuration">
+        <ul class="list-none">
+          <li>
+            <label class="font-bold">Output location:</label> 
+            {{ newBag.targetDirectory }}
+          </li>
+          <li>
+            <label class="font-bold">Hash Algorithm(s):</label>
+            {{ newBag.digestAlgorithms.join(', ') }}
+          </li>
+          <li>
+            <label class="font-bold">Bag Info:</label>
+            <p class="indent-8" v-for="tag in newBag.bagInfo">{{ tag.label }}: {{ tag.value }}</p>
+          </li>
+        </ul>
+      </Fieldset>
+      </div>
       
     </template>
 
