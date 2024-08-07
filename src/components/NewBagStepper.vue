@@ -1,7 +1,6 @@
 <script setup>
 import { ref, reactive, watch, onMounted } from 'vue';
-import { selectedFilesStore, handleNewFiles } from '../store';
-import { listen } from '@tauri-apps/api/event';
+import { selectedFilesStore } from '../store';
 import Bag from '../Bag';
 import NewBagStepOne from './NewBagStep1.vue';
 import NewBagStepTwo from './NewBagStep2.vue';
@@ -16,9 +15,6 @@ onMounted(async () => {
   selectedFilesStore.onKeyChange("selectedFiles", (_selectedFiles) => bagEntries.value = _selectedFiles); // reload when value changes for key in store
 });
 
-const errorMessage = ref('');
-listen('tauri://file-drop', event => handleNewFiles(event.payload.paths)
-  .catch(error => errorMessage.value = error));
 </script>
 
 <template>
@@ -45,6 +41,4 @@ listen('tauri://file-drop', event => handleNewFiles(event.payload.paths)
         </StepPanels>
 
     </Stepper>
-
-    {{ errorMessage }}
 </template>

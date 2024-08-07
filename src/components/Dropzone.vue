@@ -17,7 +17,12 @@ listen(
       :class="{ 'animate-pulse': animateFileDropIcon }"
     ></i>
     <p class="mt-4 mb-0">Drag and drop files here to add to Bag</p>
-    <!-- <p class="justify-self-start">or select files.</p> -->
+    <p class="justify-self-start">
+      or
+      <a class="text-blue-600" href="#" @click="$emit('selectFiles')"
+        >select files.</a
+      >
+    </p>
   </div>
 </template>
 

@@ -37,7 +37,7 @@ watch(tagsList, (newTagsList) => {
       const { label, value } = item;
       return { label, value };
     });
-}, {deep: true});
+}, {immediate: true, deep: true});
 
 const selectedDigestAlgorithms = ref(props.newBag.digestAlgorithms);
 const digestAlgorithmOptions = ref([

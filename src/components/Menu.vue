@@ -3,7 +3,7 @@ defineEmits(["helpButtonClicked", "settingsButtonClicked"]);
 </script>
 
 <template>
-  <MenuBar :model="menuItems" style="border-style: none">
+  <MenuBar style="border-style: none">
     <template #start>
       <Button
         icon="pi pi-question-circle"

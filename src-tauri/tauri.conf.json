@@ -11,8 +11,8 @@
   "app": {"windows": [
       {
         "title": "Baggeroo",
-        "width": 960,
-        "height": 720
+        "width": 1200,
+        "height": 900
       }
     ],
     "security": {
